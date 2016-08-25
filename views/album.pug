@@ -1,0 +1,55 @@
+doctype html
+html(lang='en')
+  head
+    //if IE
+      meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(charset='utf-8')
+    title Galería de fotos de Berna
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='/stylesheets/blueimp-gallery.css')
+    link(rel='stylesheet', href='/stylesheets/blueimp-gallery-indicator.css')
+    link(rel='stylesheet', href='/stylesheets/blueimp-gallery-video.css')
+    link(rel='stylesheet', href='/stylesheets/demo.css')
+  body
+    h1 Álbumes
+    h2 #{title}
+    #links.links
+      each photo, index in album
+        a(href=photo.full, title='photo.title', data-gallery='')
+          img(src=photo.full, width='75px', height='75px', id=title+index)
+    #blueimp-gallery.blueimp-gallery
+      .slides
+      h3.title
+      a.prev <
+      a.next >
+      a.close x
+      a.play-pause
+      ol.indicator
+    script(src='/javascripts/blueimp-helper.js')
+    script(src='/javascripts/blueimp-gallery.js')
+    script(src='/javascripts/blueimp-gallery-fullscreen.js')
+    script(src='/javascripts/blueimp-gallery-indicator.js')
+    script(src='/javascripts/vendor/jquery.js')
+    script(src='/javascripts/vendor/exif.js')
+    script(src='/javascripts/jquery.blueimp-gallery.js')
+    script(src='/javascripts/rodzina.js')
+    script(type="text/javascript").
+      var images = document.querySelectorAll(".links, a, img");
+      for(var i = 0; i<images.length; i++){
+        EXIF.getData(images[i], function() {  
+          if(EXIF.getTag(this, "Orientation") === 8) {
+            $(#{title}0).css('transform', 'rotate(-90deg)');
+          } 
+        });
+      }
+      //console.log(EXIF.getTag(this, "Orientation")+ " "+EXIF.getTag(this, "Model")+" "+i);
+      //$('#links img').each(function(index) {
+      //console.log($(this) instanceof HTMLImageElement);
+      //console.log( $(this).exif('Orientation') );
+      //console.log($(this));
+      //EXIF.getData($(this), function() {  
+      //if(EXIF.getTag(this, "Orientation") === 8) $('#rotated').css('transform','rotate(-90deg)');
+      //});
+      
+      
+

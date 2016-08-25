@@ -35,3 +35,23 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+database/_mdb_catalog.wt
+database/collection-0-1336359675308104645.wt
+database/index-1-1336359675308104645.wt
+database/mongod.lock
+database/sizeStorer.wt
+database/storage.bson
+database/WiredTiger
+database/WiredTiger.lock
+database/WiredTiger.turtle
+database/WiredTiger.wt
+database/WiredTigerLAS.wt
+database/diagnostic.data/metrics.2016-08-21T15-38-21Z-00000
+database/diagnostic.data/metrics.2016-08-21T15-53-02Z-00000
+database/diagnostic.data/metrics.2016-08-21T16-39-14Z-00000
+database/diagnostic.data/metrics.2016-08-21T17-05-58Z-00000
+database/diagnostic.data/metrics.2016-08-24T12-17-31Z-00000
+database/journal/WiredTigerLog.0000000005
+database/journal/WiredTigerPreplog.0000000001
+database/journal/WiredTigerPreplog.0000000002
+sandbox
