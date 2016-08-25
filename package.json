@@ -1,0 +1,23 @@
+{
+  "name": "drzewo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "DEBUG=drzewo:* ./node_modules/nodemon/bin/nodemon.js -e js ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "exif": "git://github.com/gomfunkel/node-exif.git#b36ec44",
+    "express": "~4.13.4",
+    "gm": "^1.23.0",
+    "morgan": "~1.7.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.0-beta5",
+    "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.10.2"
+  }
+}
