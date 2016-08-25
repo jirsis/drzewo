@@ -1,0 +1,25 @@
+version: '2'
+services:
+    apache:
+        container_name: apache.gallery
+        image: httpd:alpine
+        depends_on:
+         - "mongodb"
+        ports:
+         - "8080:80"
+        volumes:
+            - ./gallery:/usr/local/apache2/htdocs/
+    mongodb:
+        container_name: mongodb.gallery
+        image: mongo:3.3.11
+        ports:
+         - "27017:27017"
+        volumes:
+            - ./database:/data/db
+#    nodejs:
+#        container_name: nodejs.gallery
+#        image: node:6.4.0
+#        ports:
+#         - "27017:27017"
+#        volumes:
+#            - ./database:/data/db
