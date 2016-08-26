@@ -6,10 +6,11 @@
     "start": "DEBUG=drzewo:* ./node_modules/nodemon/bin/nodemon.js -e js ./bin/www"
   },
   "dependencies": {
+    "async": "^2.0.1",
+    "bluebird": "^3.4.3",
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
-    "exif": "git://github.com/gomfunkel/node-exif.git#b36ec44",
     "express": "~4.13.4",
     "gm": "^1.23.0",
     "morgan": "~1.7.0",
