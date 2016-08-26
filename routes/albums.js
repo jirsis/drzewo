@@ -8,107 +8,52 @@ Promise.promisifyAll(gm.prototype);
 var path = require('path');
 var async = require('async');
 var sanitizeFilename = require('sanitize-filename');
+// var mongoose = require('mongoose');
+// var Schema = moongose.Schema;
+
+var config=require('../config');
 
 router.get('/:name', function(req, res) {
 	var name = req.params.name;
-	fs.readdir(__dirname+'/../gallery/img/'+name, function(err, files){
-		if(err) res.status(500).send({"error": err});
-		var data =[];
-		files.forEach(function(e){
-			data.push("http://jirsis.local:3000/img/"+name+"/"+e);
-		});
-		res.send(data);
-	});
+	var dir = path.join(__dirname, '..', 'gallery', 'img', name);
+	getFiles(dir)
+		.bind({name: name})
+		.map(createUrl)
+		.bind(res)
+		.then(returnUrls)
 });
 
-
 router.post('/:name', function(req, res){
-	var name = req.params.name;
-	var dir = __dirname+'/../gallery/img/'+name;
-	var thumbnailDir= dir + "/thumbnail/";
-	fs.readdir(dir, function(err, files){
-		if(!fs.existsSync(thumbnailDir)){
-			fs.mkdirSync(thumbnailDir,0744);
-		}
-		var thumbnailsCreated = [];
-		files.map(function(file){
-			return dir+'/'+file;
-		})
-		.filter(function(file){
-			if(!fs.statSync(file).isDirectory()) return file;
-		})
-		.filter(function(file){
-			if(!path.basename(file).startsWith(".")) return file;
-		})
-		.map(function(file){
-			gm(file)
-			.resize(75, 75)
-			.autoOrient()
-			.write(thumbnailDir+path.basename(file), function (err) {
-				if (err) thumbnailsCreated.push({failed: thumbnailDir+path.basename(file)});
-				else thumbnailsCreated.push({created: thumbnailDir+path.basename(file)});
-				debug("writer:" + thumbnailDir+path.basename(file));
-			});
-		});
-		res.send(thumbnailsCreated);
-	});
-})
-
-
-
-router.post('/jirsis/:name', function(req, res){
-	var name = req.params.name;
-	var dir = __dirname+'/../gallery/img/'+name;
-	var thumbnailDir= dir + "/thumbnail/";
-	fs.readdir(dir, function(err, files){
-		if(!fs.existsSync(thumbnailDir)){
-			fs.mkdirSync(thumbnailDir,0744);
-		}
-		var thumbnailsCreated = [];
-
-		files = files.map(function(file){
-			return dir+'/'+file;
-		})
-		.filter(function(file){
-			if(!fs.statSync(file).isDirectory()) return file;
-		})
-		.filter(function(file){
-			if(!path.basename(file).startsWith(".")) return file;
-		});
-
-		Promise.map(files, function(file){
-			var gm = Promise.promisifyAll(require('gm')(file));
-			gm.writeAsync(thumbnailDir+path.basename(file))
-			.then(
-				function(){
-					debug("processed: "+thumbnailDir+path.basename(file));
-					thumbnailsCreated.push({created: thumbnailDir+path.basename(file)});
-				},
-				function(){
-					debug("error");
-					thumbnailsCreated.push({failed: thumbnailDir+path.basename(file)});
-				}
-			);
-		}).then(function(){
-			res.send(thumbnailsCreated);
-		});
-
-	});
-})
-
-router.post('/promise/:name', function(req, res){
 	var name = sanitizeFilename(req.params.name);
 	var dir = path.normalize(
 		path.join(__dirname, '..', 'gallery', 'img', name)
 	);
 	var thumbnailDir = path.join(dir, 'thumbnail');
+	var urlBase = path.join(config.urlBase, name, 'thumbnail');
+	debug("url: "+ urlBase);
+		
+	if(!fs.existsSync(thumbnailDir)){
+		fs.mkdirSync(thumbnailDir,0744);	
+	}
 
 	getFiles(dir)
-		.bind({ thumbnailDir: thumbnailDir, dir: dir })
+		.bind({ thumbnailDir: thumbnailDir, urlBase: urlBase, dir: dir })
 		.map(createThumbnail)
 		.bind(res)
 		.then(returnThumbnails);
+
+	// mongoose.connect(config.mongoHost);
 });
+
+function createUrl(file){
+	var name = this.name;
+	return path.join(config.urlBase, name, file);
+}
+
+function returnUrls(files){
+	this.json({ photos: files });
+}
+
 
 function getFiles(dir) {
 	return fs.readdirAsync(dir).bind({ dir: dir }).then(filterFiles);
@@ -124,20 +69,23 @@ function filterFiles(files) {
 
 function createThumbnail(file) {
 	var filePath = path.join(this.dir, file);
+	var urlBase = this.urlBase;
 	return gm(filePath)
+		.resize(75,75)
+		.autoOrient()
 		.writeAsync(path.join(this.thumbnailDir, file))
-		.then(thumbOK.bind(this, filePath))
+		.then(thumbOK.bind(this, path.join(urlBase, file)))
 		.catch(thumbKO);
 }
 
 function thumbOK(file) {
 	debug('processed: ', file);
-	return file;
+	return {photo: file, status: "processed"};
 }
 
-function thumbKO(error) {
-	debug('error: ', error);
-	return;
+function thumbKO(file) {
+	debug('error: ', file);
+	return {photo: file, status: "failed"};;
 }
 
 function returnThumbnails(files) {

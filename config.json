@@ -1,0 +1,4 @@
+{
+	"urlBase": "http://jirsis.local:3000/img",
+	"mongoHost": "localhost:27017"
+}
