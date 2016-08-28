@@ -56,3 +56,4 @@ database/journal/WiredTigerPreplog.0000000001
 database/journal/WiredTigerPreplog.0000000002
 sandbox
 **/thumbnail/**
+database/**

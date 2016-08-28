@@ -1,5 +1,5 @@
 var Promise = require('bluebird');
-var debug = require('debug')('drzewo:router/albums');
+var debug = require('debug')('drzewo:routes/albums');
 var express = require('express');
 var router = express.Router();
 var fs = Promise.promisifyAll(require('fs'));
@@ -8,8 +8,6 @@ Promise.promisifyAll(gm.prototype);
 var path = require('path');
 var async = require('async');
 var sanitizeFilename = require('sanitize-filename');
-// var mongoose = require('mongoose');
-// var Schema = moongose.Schema;
 
 var config=require('../config');
 
@@ -22,6 +20,15 @@ router.get('/:name', function(req, res) {
 		.bind(res)
 		.then(returnUrls)
 });
+
+function createUrl(file){
+	var name = this.name;
+	return path.join(config.urlBase, name, file);
+}
+
+function returnUrls(files){
+	this.json({ photos: files });
+}
 
 router.post('/:name', function(req, res){
 	var name = sanitizeFilename(req.params.name);
@@ -41,19 +48,7 @@ router.post('/:name', function(req, res){
 		.map(createThumbnail)
 		.bind(res)
 		.then(returnThumbnails);
-
-	// mongoose.connect(config.mongoHost);
 });
-
-function createUrl(file){
-	var name = this.name;
-	return path.join(config.urlBase, name, file);
-}
-
-function returnUrls(files){
-	this.json({ photos: files });
-}
-
 
 function getFiles(dir) {
 	return fs.readdirAsync(dir).bind({ dir: dir }).then(filterFiles);
