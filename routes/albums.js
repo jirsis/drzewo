@@ -18,22 +18,20 @@ var config=require('../config');
 
 router.get('/:name', function(req, res) {
 	var name = req.params.name;
-	var dir = path.join(__dirname, '..', 'gallery', 'img', name);
-
-
-	getFiles(dir)
-		.bind({name: name})
-		.map(createUrl)
-		.bind(res)
-		.then(returnUrls)
+	Album.findOne({name: name}, function(err, album){
+		getFiles(album.physical_directory)
+			.bind({name: name})
+			.map(createUrl)
+			.bind(res)
+			.then(returnUrls)	
+	});
 });
 
 router.get('/:albumName/thumbnails/:image', function(req, res){
 	var albumName = sanitizeFilename(req.params.albumName);
 	var image = sanitizeFilename(req.params.image);
-	Thumbnail.find({album: albumName, image: image}, function(err, thumbnails){
+	Thumbnail.findOne({album: albumName, image: image}, function(err, thumbnail){
 		if(err) res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
-		var thumbnail = thumbnails.pop();
 		if(!thumbnail) res.status(HttpStatus.NOT_FOUND).end();
 		else {
 			thumbnail.load()
@@ -56,7 +54,7 @@ router.post('/:name', function(req, res){
 		path.join(__dirname, '..', 'gallery', 'img', name)
 	);
 	var thumbnailDir = path.join(dir, 'thumbnail');
-	var urlBase = path.join(config.urlBase, name, 'thumbnail');
+	var urlBase = path.join(config.urlBase, 'img', name, 'thumbnail');
 	debug("url: "+ urlBase);
 	fs.readdir(dir, function(err, files){
 		var thumbnails = files.filter(function(file){
@@ -120,7 +118,7 @@ function createThumbnail(file) {
 		.resize(75,75)
 		.autoOrient()
 		.writeAsync(path.join(this.thumbnailDir, file))
-		.then(thumbOK.bind(this, path.join(urlBase, file)))
+		.then(thumbOK.bind(this, path.join(urlBase, 'img', file)))
 		.catch(thumbKO);
 }
 
@@ -140,7 +138,10 @@ function returnThumbnails(files) {
 
 function createUrl(file){
 	var name = this.name;
-	return path.join(config.urlBase, name, file);
+	return {
+		original: path.join(config.urlBase, 'img', name, file),
+		thumbnail: path.join(config.urlBase, 'albums', name, 'thumbnails', file)
+	};
 }
 
 function returnUrls(files){
