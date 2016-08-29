@@ -1,4 +1,4 @@
 {
 	"urlBase": "http://jirsis.local:3000/img",
-	"mongoHost": "mongodb://localhost:27017/test"
+	"mongoHost": "mongodb://localhost:27017/drzewo"
 }
