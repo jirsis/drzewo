@@ -19,7 +19,8 @@ var config=require('../config');
 router.get('/:name', function(req, res) {
 	var name = req.params.name;
 	Album.findOne({name: name}, function(err, album){
-		getFiles(album.physical_directory)
+		if(album === null) res.status(HttpStatus.NOT_FOUND).end();
+		else getFiles(album.physical_directory)
 			.bind({name: name})
 			.map(createUrl)
 			.bind(res)
@@ -65,26 +66,33 @@ router.post('/:name', function(req, res){
 		thumbnails.forEach(function(file){
 			var source = path.join(dir, file);
 			var destination = path.join(thumbnailDir, file);
-			debug("processing "+source);
 			gm(source)
-				.resize(75,75, '!')
-				.autoOrient()
-				.buffer(function(err, thumbnailBuffer){
-					if(err) debug('error generating thumbnail');
-					else {
-						var thumbnail = new Thumbnail({album: name, image: file});
-						thumbnail
-							.addImage(file, thumbnailBuffer)
-							.then(function(doc){
-								debug("add image");
-								thumbnail.save();
-							})
-							.catch(function(err){
-								debug("error adding image");
-							})
-							.done();
-					}
-				});
+				.size(function(err, size){
+					this.resize(config.thumbnail.width,config.thumbnail.height, '!')
+					.autoOrient()
+					.buffer(function(err, thumbnailBuffer){
+						if(err) debug('error generating thumbnail');
+						else {
+							var thumbnail = new Thumbnail({
+								album: name, 
+								image: file,
+								width: size.width, 
+								height: size.height
+							});			
+							thumbnail
+								.addImage(file, thumbnailBuffer)
+								.then(function(doc){
+									debug('thumbnail generated: '+thumbnail.image);
+									thumbnail.save();
+								})
+								.catch(function(err){
+									debug("error adding image");
+								})
+								.done();
+						}
+					});	
+				})
+				
 		});
 		res.json({status: album.total_pictures+" files"});
 	})
@@ -92,7 +100,7 @@ router.post('/:name', function(req, res){
 
 function generateThumbnail(file){
 	gm
-		.resize(75,75, '!')
+		.resize(config.thumbnail.width,config.thumbnail.height, '!')
 		.autoOrient()
 		.write(path.join(this, file), function(err){
 			if(!err) debug('weeeee');
@@ -115,7 +123,7 @@ function createThumbnail(file) {
 	var filePath = path.join(this.dir, file);
 	var urlBase = this.urlBase;
 	return gm(filePath)
-		.resize(75,75)
+		.resize(config.thumbnail.width,config.thumbnail.height)
 		.autoOrient()
 		.writeAsync(path.join(this.thumbnailDir, file))
 		.then(thumbOK.bind(this, path.join(urlBase, 'img', file)))
@@ -138,10 +146,37 @@ function returnThumbnails(files) {
 
 function createUrl(file){
 	var name = this.name;
+	return Promise.all([
+		createUrlOriginalImage(name, file),
+		createUrlThumbnailImage(name, file)
+	 ])
+		.spread(joinOriginalWithThumbnail);
+}
+
+function joinOriginalWithThumbnail(original, thumbnail){
 	return {
-		original: path.join(config.urlBase, 'img', name, file),
-		thumbnail: path.join(config.urlBase, 'albums', name, 'thumbnails', file)
-	};
+		thumbnail: thumbnail,
+		original: original
+	}
+}
+
+function createUrlThumbnailImage(name, file){
+	return {
+		image: path.join(config.urlBase, 'albums', name, 'thumbnails', file),
+		width: config.thumbnail.width,
+		height: config.thumbnail.height
+	}
+}
+
+function createUrlOriginalImage(name, file){
+	return Thumbnail.findOne({album: name, image: file}, "image width height -_id")
+		.then(function(thumbnail){			
+			return {
+				image: path.join(config.urlBase, 'img', name, thumbnail.image),
+				width: thumbnail.width,
+				height: thumbnail.height
+			}
+	});
 }
 
 function returnUrls(files){

@@ -1,4 +1,8 @@
 {
 	"urlBase": "http://jirsis.local:3000/",
-	"mongoHost": "mongodb://localhost:27017/drzewo"
+	"mongoHost": "mongodb://localhost:27017/drzewo",
+	"thumbnail": {
+		"width": 75,
+		"height": 75
+	}
 }

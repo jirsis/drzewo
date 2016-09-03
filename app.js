@@ -12,6 +12,7 @@ var config = require('./config');
 
 var mongoose = require('mongoose');
 mongoose.connect(config.mongoHost);
+mongoose.Promise = require('bluebird');
 var db = mongoose.connection;
 db.on('error', function(){debug('conected to database FAILED: '+ config.mongoHost)});
 db.once('open', function(){debug('conected to database: '+ config.mongoHost)});
@@ -27,8 +28,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'gallery')));
+// app.use(express.static(path.join(__dirname, 'node_modules/photoswipe/website')));
+
 
 app.use('/', require('./routes/index'));
 app.use('/albums', require('./routes/albums'));
