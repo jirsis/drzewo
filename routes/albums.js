@@ -28,6 +28,22 @@ router.get('/:name', function(req, res) {
 	});
 });
 
+router.get('/:name/:image', function(req, res) {
+	var name = req.params.name;
+	var image = req.params.image;
+	Album.findOne({name: name})
+		.then(function(album){
+			var img = fs.readFileSync(path.join(album.physical_directory, image));
+     		res.writeHead(200, {'Content-Type': 'image/jpeg' });
+     		res.end(img, 'binary');
+		})
+		.catch(function(err){
+			debug(err);
+			res.send(HttpStatus.INTERNAL_SERVER_ERROR);
+		})
+});
+
+
 router.get('/:albumName/thumbnails/:image', function(req, res){
 	var albumName = sanitizeFilename(req.params.albumName);
 	var image = sanitizeFilename(req.params.image);
@@ -155,14 +171,14 @@ function createUrl(file){
 
 function joinOriginalWithThumbnail(original, thumbnail){
 	return {
-		thumbnail: thumbnail,
-		original: original
+		original: original,
+		thumbnail: thumbnail
 	}
 }
 
 function createUrlThumbnailImage(name, file){
 	return {
-		image: path.join(config.urlBase, 'albums', name, 'thumbnails', file),
+		image: config.urlBase + path.join('albums', name, 'thumbnails', file),
 		width: config.thumbnail.width,
 		height: config.thumbnail.height
 	}
@@ -172,7 +188,7 @@ function createUrlOriginalImage(name, file){
 	return Thumbnail.findOne({album: name, image: file}, "image width height -_id")
 		.then(function(thumbnail){			
 			return {
-				image: path.join(config.urlBase, 'img', name, thumbnail.image),
+				image: config.urlBase + path.join('albums', name, thumbnail.image),
 				width: thumbnail.width,
 				height: thumbnail.height
 			}
