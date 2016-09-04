@@ -17,6 +17,7 @@ var Thumbnail = require('../models/thumbnails');
 var config=require('../config');
 
 router.get('/:name', function(req, res) {
+	config.urlBase=req.protocol + '://'+req.headers.host+'/';
 	var name = req.params.name;
 	Album.findOne({name: name}, function(err, album){
 		if(album === null) res.status(HttpStatus.NOT_FOUND).end();
@@ -47,32 +48,35 @@ router.get('/:name/:image', function(req, res) {
 router.get('/:albumName/thumbnails/:image', function(req, res){
 	var albumName = sanitizeFilename(req.params.albumName);
 	var image = sanitizeFilename(req.params.image);
-	Thumbnail.findOne({album: albumName, image: image}, function(err, thumbnail){
-		if(err) res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
-		if(!thumbnail) res.status(HttpStatus.NOT_FOUND).end();
-		else {
-			thumbnail.load()
-				.then(function(doc){
-					var attachment = doc.attachments[0];
-					res.contentType(attachment.mimetype);
-					res.end(new Buffer(attachment.buffer.toString(), 'base64'));
-				})
-				.catch(function(err){
-					debug("error: "+err);
-				})
-				.done();
-		}
-	})
+	Thumbnail.findOne({album: albumName, image: image})
+		.then(function(thumbnail){
+			if(!thumbnail) res.status(HttpStatus.NOT_FOUND).end();
+			else {
+				thumbnail.load()
+					.then(function(doc){
+						var attachment = doc.attachments[0];
+						res.contentType(attachment.mimetype);
+						res.end(new Buffer(attachment.buffer.toString(), 'base64'));
+					})
+					.catch(function(err){
+						debug("error: "+err);
+					})
+					.done();
+			}
+		})
+		.catch(function(err){
+			res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+		})
 })
 
 router.post('/:name', function(req, res){
+	config.urlBase=req.protocol + '://'+req.headers.host+'/';
 	var name = sanitizeFilename(req.params.name);
 	var dir = path.normalize(
 		path.join(__dirname, '..', 'gallery', 'img', name)
 	);
 	var thumbnailDir = path.join(dir, 'thumbnail');
 	var urlBase = path.join(config.urlBase, 'img', name, 'thumbnail');
-	debug("url: "+ urlBase);
 	fs.readdir(dir, function(err, files){
 		var thumbnails = files.filter(function(file){
 			return fs.statSync(path.join(dir, file)).isFile() && !file.startsWith('.');
