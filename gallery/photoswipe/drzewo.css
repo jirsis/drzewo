@@ -1,0 +1,17 @@
+ul, li, figure, img {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+  width: 80%;
+}
+
+li {
+  float: left;
+}
+
+figure {
+  height: 80px;
+}
