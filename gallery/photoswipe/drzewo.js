@@ -64,6 +64,7 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 
         // find root element of slide
         var clickedListItem = closest(eTarget, function(el) {
+            // return (el.tagName && el.tagName.toUpperCase() === 'UL');
             return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
         });
 
@@ -75,6 +76,13 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
         // alternatively, you may define index via data- attribute
         var clickedGallery = clickedListItem.parentNode,
             childNodes = clickedListItem.parentNode.childNodes,
+            // childNodes = function(clickedGallery){
+            //     var childNodes = [];
+            //     for(var i = 0;i<clickedGallery.length;i++){
+            //         childNodes.push(clickedGallery[i].children)
+            //     }
+            //     return childNodes;
+            // }(clickedGallery.children[0].children),
             numChildNodes = childNodes.length,
             nodeIndex = 0,
             index;
