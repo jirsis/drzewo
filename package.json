@@ -19,6 +19,7 @@
     "mongoose-gm": "^0.1.23",
     "morgan": "~1.7.0",
     "path": "^0.12.7",
+    "photoswipe": "^4.1.1",
     "pug": "^2.0.0-beta5",
     "sanitize-filename": "^1.6.0",
     "serve-favicon": "~2.3.0"
