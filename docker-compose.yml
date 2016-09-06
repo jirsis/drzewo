@@ -1,14 +1,14 @@
 version: '2'
 services:
-    apache:
-        container_name: apache.gallery
-        image: httpd:alpine
-        depends_on:
-         - "mongodb"
-        ports:
-         - "8080:80"
-        volumes:
-            - ./gallery:/usr/local/apache2/htdocs/
+#    apache:
+#        container_name: apache.gallery
+#        image: httpd:alpine
+#        depends_on:
+#         - "mongodb"
+#        ports:
+#         - "8080:80"
+#        volumes:
+#            - ./gallery:/usr/local/apache2/htdocs/
     mongodb:
         container_name: mongodb.gallery
         image: mongo:3.3.11
