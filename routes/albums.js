@@ -19,14 +19,17 @@ var config=require('../config');
 router.get('/:name', function(req, res) {
 	config.urlBase=req.protocol + '://'+req.headers.host+'/';
 	var name = req.params.name;
-	Album.findOne({name: name}, function(err, album){
-		if(album === null) res.status(HttpStatus.NOT_FOUND).end();
-		else getFiles(album.physical_directory)
-			.bind({name: name})
-			.map(createUrl)
-			.bind(res)
-			.then(returnUrls)	
-	});
+	Album.findOne({name: name})
+		.then(function(album){
+			getFiles(album.physical_directory)
+				.bind({name: name})
+				.map(createUrl)
+				.bind({res: res, name: name})
+				.then(returnUrls)	
+		})
+		.catch(function(err){
+			res.status(HttpStatus.NOT_FOUND).end();
+		});
 });
 
 router.get('/:name/:image', function(req, res) {
@@ -200,7 +203,16 @@ function createUrlOriginalImage(name, file){
 }
 
 function returnUrls(files){
-	this.json({ photos: files });
+	var res= this.res;
+	var name = this.name;
+	res.json({ 
+		title: {
+			pl: 'czesc',
+			es: 'Sierra de Gata - Portugal - diciembre 2015'
+		},
+		name: name,
+		photos: files 
+	});
 }
 
 
