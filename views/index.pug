@@ -1,5 +1,9 @@
-extends layout
+extends gallery 
 
-block content
-  h1= title
-  p Welcome to #{title}
+block gallery
+    h2.my-gallery #{title.es}
+    .my-gallery
+      each photo in photos 
+        figure
+          a(href=photo.original.image , data-size=photo.original.width+'x'+photo.original.height)
+            img(src=photo.thumbnail.image)
