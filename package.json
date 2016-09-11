@@ -20,6 +20,7 @@
     "path": "^0.12.7",
     "photoswipe": "^4.1.1",
     "pug": "^2.0.0-beta5",
+    "request": "^2.74.0",
     "sanitize-filename": "^1.6.0",
     "serve-favicon": "~2.3.0"
   },

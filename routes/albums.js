@@ -73,12 +73,11 @@ router.get('/:albumName/thumbnails/:image', function(req, res){
 })
 
 router.post('/:name', function(req, res){
+	debug("POST /:name");
 	config.urlBase=req.protocol + '://'+req.headers.host+'/';
 	var name = sanitizeFilename(req.params.name);
-	var dir = path.normalize(
-		path.join(__dirname, '..', 'gallery', 'img', name)
-	);
-	var thumbnailDir = path.join(dir, 'thumbnail');
+	var albumPath = req.body.albumPath;
+	var dir = path.normalize(path.join(config.defaultAlbumPath, albumPath));
 	var urlBase = path.join(config.urlBase, 'img', name, 'thumbnail');
 	fs.readdir(dir, function(err, files){
 		var thumbnails = files.filter(function(file){
@@ -88,7 +87,6 @@ router.post('/:name', function(req, res){
 		album.save();
 		thumbnails.forEach(function(file){
 			var source = path.join(dir, file);
-			var destination = path.join(thumbnailDir, file);
 			gm(source)
 				.size(function(err, size){
 					this.resize(config.thumbnail.width,config.thumbnail.height, '!')

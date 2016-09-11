@@ -12,11 +12,10 @@ router.get('/', function(req, response) {
   };
   http.request(options, function(res) {
   	res.setEncoding('utf8');
-	res.on('data', function (chunk) {
-		response.render('index', JSON.parse(chunk));	   
-	});
+	  res.on('data', function (chunk) {
+		  response.render('index', JSON.parse(chunk));	   
+	  });
   }).end();
-  
 });
 
 module.exports = router;

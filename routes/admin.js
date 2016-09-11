@@ -4,6 +4,10 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var fsAsyn = Promise.promisifyAll(require('fs'));
+var http = require('http');
+var request = require('request');
+var url = require('url');
+
 var config=require('../config');
 
 router.get('/new', function(req, res){
@@ -27,12 +31,22 @@ router.get('/new', function(req, res){
 
 router.post('/new', function(req,res){
 	debug('POST /new');
-	var albums = [];
+	config.urlBase = req.protocol + '://'+req.headers.host+'/';
 	var partialPath = path.normalize(req.query.path || '/')	;
-	var albumsPath = path.join(config.defaultAlbumPath, partialPath);
 	var albumName = req.body.album;
-	albumsPath=path.normalize(albumsPath);
-	res.redirect('/admin/new?path='+partialPath+'&created='+albumName);
+	var options = {
+		uri: url.format({
+			protocol: req.protocol,
+			host: req.headers.host,
+			pathname: ['albums',albumName].join('/')
+		}), 
+		method: 'POST',
+		json: {albumPath: partialPath}
+	};
+	request(options, function(err, response, body){
+		res.redirect('/admin/new?path='+partialPath+'&created='+albumName);
+	});
+	
 });
 
 function analyzeDirectory(files){
