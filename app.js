@@ -20,6 +20,7 @@ db.once('open', function(){debug('conected to database: '+ config.mongoHost)});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.locals.pretty = true;
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'gallery')));
 
 app.use('/', require('./routes/index'));
 app.use('/albums', require('./routes/albums'));
+app.use('/admin', require('./routes/admin'));
 
 
 // catch 404 and forward to error handler

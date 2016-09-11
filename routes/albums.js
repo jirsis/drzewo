@@ -7,7 +7,6 @@ var fs=require('fs');
 var gm = require('gm');
 require('gm-buffer');
 var path = require('path');
-var async = require('async');
 var sanitizeFilename = require('sanitize-filename');
 var HttpStatus = require('http-status-codes');
 
@@ -33,6 +32,7 @@ router.get('/:name', function(req, res) {
 });
 
 router.get('/:name/:image', function(req, res) {
+	debug('GET /:name/:image');
 	var name = req.params.name;
 	var image = req.params.image;
 	Album.findOne({name: name})
@@ -43,7 +43,7 @@ router.get('/:name/:image', function(req, res) {
 		})
 		.catch(function(err){
 			debug(err);
-			res.send(HttpStatus.INTERNAL_SERVER_ERROR);
+			res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 		})
 });
 

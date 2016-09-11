@@ -3,5 +3,6 @@
 	"thumbnail": {
 		"width": 75,
 		"height": 75
-	}
+	}, 
+	"defaultAlbumPath": "/Volumes/hiacynt/fotos/"
 }

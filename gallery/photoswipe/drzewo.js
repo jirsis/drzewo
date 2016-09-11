@@ -72,17 +72,8 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
             return;
         }
 
-        // find index of clicked item by looping through all child nodes
-        // alternatively, you may define index via data- attribute
         var clickedGallery = clickedListItem.parentNode,
             childNodes = clickedListItem.parentNode.childNodes,
-            // childNodes = function(clickedGallery){
-            //     var childNodes = [];
-            //     for(var i = 0;i<clickedGallery.length;i++){
-            //         childNodes.push(clickedGallery[i].children)
-            //     }
-            //     return childNodes;
-            // }(clickedGallery.children[0].children),
             numChildNodes = childNodes.length,
             nodeIndex = 0,
             index;
