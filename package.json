@@ -6,7 +6,6 @@
     "start": "DEBUG=drzewo:* ./node_modules/nodemon/bin/nodemon.js -e js ./bin/www"
   },
   "dependencies": {
-    "async": "^2.0.1",
     "bluebird": "^3.4.3",
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
