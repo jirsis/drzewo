@@ -58,3 +58,5 @@ sandbox
 **/thumbnail/**
 database/**
 gallery/img/example/**
+/target/
+.springBeans

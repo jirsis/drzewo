@@ -1,0 +1,9 @@
+io:
+  jirsis:
+    drzewo:
+      gallery-path: /Users/inaki.reta/Documents/proyectos/drzewo/gallery/img
+#spring.data.mongodb.database: drzewo
+
+spring:
+  jade4j:
+    prettyPrint: true
