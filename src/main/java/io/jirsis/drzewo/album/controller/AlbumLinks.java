@@ -5,6 +5,6 @@ public interface AlbumLinks {
 	
 	public static final String ALBUM_NAME=DEFAULT+"/{name}";
 	
-	public static final String ALBUM_NAME_IMAGE=ALBUM_NAME + "/{image}";
+	public static final String ALBUM_NAME_IMAGE=ALBUM_NAME + "/{image:.*}";
 	
 }

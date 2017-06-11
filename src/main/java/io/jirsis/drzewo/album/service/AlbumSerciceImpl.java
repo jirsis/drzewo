@@ -88,4 +88,16 @@ public class AlbumSerciceImpl implements AlbumService{
 		return entity;
 	}
 
+	@Override
+	public byte[] sendOneImage(String albumName, String image) {
+		 ThumbnailEntity imageInAlbum = thumbnailRepository.findByAlbumAndImage(albumName, image);
+		 
+		 byte [] rawImage = null;
+		 if(imageInAlbum!=null){
+			 AlbumEntity album = albumRepository.findOne(albumName);
+			 rawImage = imageHelper.getImage(album.getPath(), image);
+		 }
+		 return rawImage;
+	}
+
 }

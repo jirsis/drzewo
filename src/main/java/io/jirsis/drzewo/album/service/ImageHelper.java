@@ -3,6 +3,9 @@ package io.jirsis.drzewo.album.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,5 +100,17 @@ public class ImageHelper {
 		for (StackTraceElement trace : e.getStackTrace()) {
 			log.error(trace.toString());
 		}
+	}
+
+	public byte[] getImage(String path, String image) {
+		Path pathFilesystem = Paths.get(path, image);
+		byte [] rawImage;
+		try {
+			rawImage = Files.readAllBytes(pathFilesystem);
+		} catch (IOException e) {
+			rawImage = null;
+		}
+
+		return rawImage;
 	}
 }

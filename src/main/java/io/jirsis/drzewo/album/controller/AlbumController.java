@@ -32,14 +32,11 @@ public class AlbumController {
 		
 	}
 
-//	@RequestMapping(path = AlbumLinks.ALBUM_NAME_IMAGE, method = GET)
-//	public ResponseEntity<AlbumsResponse> getSingleImage(@PathVariable("name") String album, @PathVariable String image) {
-//		AlbumsResponse response = new AlbumsResponse();
-//		response.setAlbum(album);
-//		response.setImage(image);
-//		response.setThumbnail(Boolean.FALSE);
-//		return ResponseEntity.ok(response);
-//	}
+	@RequestMapping(path = AlbumLinks.ALBUM_NAME_IMAGE, method = GET)
+	public byte [] getSingleImage(@PathVariable("name") String album, @PathVariable String image) {
+		byte []  rawImage = albumService.sendOneImage(album, image);
+		return rawImage;
+	}
 
 	@RequestMapping(path = AlbumLinks.ALBUM_NAME, method = POST)
 	public ResponseEntity<NewAlbumResponse> generateAlbum(@PathVariable("name") String album, @RequestBody NewAlbumRequest request) throws URISyntaxException {

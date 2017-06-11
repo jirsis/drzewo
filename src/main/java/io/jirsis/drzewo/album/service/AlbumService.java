@@ -11,4 +11,6 @@ public interface AlbumService {
 	
 	Optional<AlbumResponse> getAlbumDetail(String albumName);
 
+	byte[] sendOneImage(String album, String image);
+
 }
