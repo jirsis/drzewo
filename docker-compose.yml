@@ -10,7 +10,7 @@ services:
 #        volumes:
 #            - ./gallery:/usr/local/apache2/htdocs/
     mongodb:
-        container_name: mongodb.gallery
+        container_name: drzewo.mongodb
         image: mongo:3.3.11
         ports:
          - "27017:27017"
