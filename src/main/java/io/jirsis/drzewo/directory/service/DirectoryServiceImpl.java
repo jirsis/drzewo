@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import io.jirsis.drzewo.directory.controller.DirectoryResponse;
 import io.jirsis.drzewo.directory.repository.FileSystemEntity;
 import io.jirsis.drzewo.directory.repository.FileSystemRepository;
-import io.jirsis.drzewo.mapper.AbstractMapper;
+import io.jirsis.drzewo.mapper.CustomMapper;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -14,7 +14,7 @@ public class DirectoryServiceImpl implements DirectoryService{
 	
 	private FileSystemRepository repository;
 	
-	private AbstractMapper<FileSystemEntity, DirectoryResponse> mapper;
+	private CustomMapper<FileSystemEntity, DirectoryResponse> mapper;
 
 	@Override
 	public DirectoryResponse getInfoAboutDir(String relativePath) {

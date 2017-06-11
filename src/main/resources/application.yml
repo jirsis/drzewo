@@ -2,8 +2,10 @@ io:
   jirsis:
     drzewo:
       gallery-path: /Users/inaki.reta/Documents/proyectos/drzewo/gallery/img
-#spring.data.mongodb.database: drzewo
-
+      thumbnail:
+        width: 75
+        height: 75
 spring:
-  jade4j:
-    prettyPrint: true
+  data:
+    mongodb:
+      database: drzewo
