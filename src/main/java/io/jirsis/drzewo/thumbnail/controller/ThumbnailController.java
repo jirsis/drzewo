@@ -28,5 +28,4 @@ public class ThumbnailController {
 			return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(response);
 		}
 	}
-
 }
