@@ -14,8 +14,6 @@ public class ThumbnailEntity {
 	
 	private String album;
 	private String image;
-//	private int width;
-//	private int height;
 	private byte[] rawData;
 
 }

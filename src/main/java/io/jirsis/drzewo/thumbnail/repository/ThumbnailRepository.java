@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ThumbnailRepository extends MongoRepository<ThumbnailEntity, String>{
 
+	ThumbnailEntity findByAlbumAndImage(String album, String image);
 }
