@@ -55,7 +55,7 @@ public class ImageHelper {
 			Thumbnails
 				.of(imagePath)
 				.size(thumbnailWidth, thumbnailHeight)
-				.rotate(calculateAngle(orientation))
+//				.rotate(calculateAngle(orientation))
 				.outputFormat("jpg")
 				.toOutputStream(stream);
 			stream.close();
@@ -85,11 +85,12 @@ public class ImageHelper {
 			Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));
 			Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 			orientation = Orientation.typeOf(directory.getInt(ExifDirectoryBase.TAG_ORIENTATION));
-		} catch (ImageProcessingException | IOException | MetadataException e) {
-			logErrorStackTrace(e);
-		}
+		} catch (ImageProcessingException | IOException | MetadataException | NullPointerException e) {
+			//if happend any problem, we asume default orientation
+			orientation = Orientation.TOP_LEFT;
+		} 
 		return orientation;
-	}
+	}	
 
 	private void logErrorStackTrace(Exception e) {
 		log.error(e.getLocalizedMessage());
