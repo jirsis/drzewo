@@ -23,10 +23,9 @@ public class FileSystemHelper {
 		} catch (java.io.IOException e) {
 			newPath = defaultPath;
 		}
-		
 		return createJailedDirectory(newPath);
 	}
-
+	
 	private File createJailedDirectory(String path) {
 		File jailedDirectory;
 		if(new File(path).exists()){

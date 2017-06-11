@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.jirsis.drzewo</groupId>
+	<groupId>io.jirsis</groupId>
 	<artifactId>drzewo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>drzewo</name>
-	<description>Album de fotos configurable</description>
+	<description>API álbum de fotos</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -23,25 +23,32 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 
-		<jade4j.version>0.3.0</jade4j.version>
+		<metadata-extractor.version>2.10.1</metadata-extractor.version>
 		<rest-assured.version>3.0.3</rest-assured.version>
+		<thumbnailator.version>0.4.8</thumbnailator.version>
 
 	</properties>
 
 	<dependencies>
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework.boot</groupId> -->
-		<!-- <artifactId>spring-boot-starter-data-mongodb</artifactId> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>com.domingosuarez.boot</groupId>
-			<artifactId>spring-boot-starter-jade4j</artifactId>
-			<version>${jade4j.version}</version>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>${thumbnailator.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.drewnoakes</groupId>
+			<artifactId>metadata-extractor</artifactId>
+			<version>${metadata-extractor.version}</version>
 		</dependency>
 
 		<dependency>
@@ -49,6 +56,7 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

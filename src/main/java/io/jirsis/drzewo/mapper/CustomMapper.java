@@ -1,6 +1,6 @@
 package io.jirsis.drzewo.mapper;
 
-public abstract class AbstractMapper<S, O> {
+public abstract class CustomMapper<S, O> {
 
 	public O from(S source){
 		return null;

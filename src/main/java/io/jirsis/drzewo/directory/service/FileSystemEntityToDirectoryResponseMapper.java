@@ -2,11 +2,11 @@ package io.jirsis.drzewo.directory.service;
 
 import io.jirsis.drzewo.directory.controller.DirectoryResponse;
 import io.jirsis.drzewo.directory.repository.FileSystemEntity;
-import io.jirsis.drzewo.mapper.AbstractMapper;
+import io.jirsis.drzewo.mapper.CustomMapper;
 import io.jirsis.drzewo.mapper.Mapper;
 
 @Mapper
-public class FileSystemEntityToDirectoryResponseMapper extends AbstractMapper<FileSystemEntity, DirectoryResponse>{
+public class FileSystemEntityToDirectoryResponseMapper extends CustomMapper<FileSystemEntity, DirectoryResponse>{
 
 	@Override
 	public DirectoryResponse from(FileSystemEntity source) {
