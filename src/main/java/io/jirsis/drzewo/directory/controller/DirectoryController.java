@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.jirsis.drzewo.directory.service.DirectoryService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @RestController
 @AllArgsConstructor
