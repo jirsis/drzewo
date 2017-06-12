@@ -1,0 +1,25 @@
+{
+  "name": "drzewo-admin",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "DEBUG=drzewo:* ./node_modules/nodemon/bin/nodemon.js -e js ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "http-status-codes": "^1.0.6",
+    "morgan": "~1.7.0",
+    "path": "^0.12.7",
+    "photoswipe": "^4.1.1",
+    "pug": "^2.0.0-beta5",
+    "request": "^2.74.0",
+    "sanitize-filename": "^1.6.0",
+    "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.10.2"
+  }
+}

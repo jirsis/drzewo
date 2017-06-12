@@ -36,4 +36,9 @@ public class FileSystemHelper {
 		return jailedDirectory;
 	}
 
+	public boolean isRoot(String relativePath) {
+		String path = jailedPath(relativePath).getAbsolutePath();
+		return defaultPath.equals(path);
+	}
+
 }
