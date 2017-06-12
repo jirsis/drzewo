@@ -23,10 +23,17 @@ public class FileSystemRepository {
 				addFile(file, entity);
 			}
 		}
+		boolean root = helper.isRoot(relativePath);
+		entity.setRoot(root);
+		if(root){
+			entity.setWorkingDirectory("."+File.separator);
+		}else{
+			entity.setWorkingDirectory(relativePath+File.separator);
+		}
 		return entity;
 
 	}
-
+	
 	private void addFile(File file, FileSystemEntity entity) {
 		if (!file.isHidden()) {
 			entity.setImages(entity.getImages() + 1);

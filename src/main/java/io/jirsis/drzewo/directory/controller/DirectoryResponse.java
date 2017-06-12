@@ -9,5 +9,7 @@ public class DirectoryResponse {
 	
 	private int totalImages;
 	private List<String> directories;
+	private String pwd;
+	private boolean root;
 
 }

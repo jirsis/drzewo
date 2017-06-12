@@ -13,6 +13,8 @@ public class FileSystemEntityToDirectoryResponseMapper extends CustomMapper<File
 		DirectoryResponse response = new DirectoryResponse();
 		response.setDirectories(source.getDirs());
 		response.setTotalImages(source.getImages());
+		response.setPwd(source.getWorkingDirectory());
+		response.setRoot(source.isRoot());
 		return response;
 	}
 
