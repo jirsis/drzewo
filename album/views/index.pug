@@ -1,0 +1,9 @@
+extends gallery 
+
+block gallery
+    h2.my-gallery #{title.es}
+    .my-gallery
+      each photo in photos 
+        figure
+          a(href=photoServer+photo.original.image , data-size=photo.original.width+'x'+photo.original.height)
+            img(src='data:image/jpeg;base64,'+photo.thumbnail.image, data-rotate="90")
