@@ -1,4 +1,4 @@
-var debug = require('debug')('drzewo:app');
+var debug = require('debug')('drzewo:album:app');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,15 +7,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var HttpStatus = require('http-status-codes');
 var app = express();
-
-var config = require('./config');
-
-var mongoose = require('mongoose');
-mongoose.connect(config.mongoHost);
-mongoose.Promise = require('bluebird');
-var db = mongoose.connection;
-db.on('error', function(){debug('conected to database FAILED: '+ config.mongoHost)});
-db.once('open', function(){debug('conected to database: '+ config.mongoHost)});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,13 +20,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'gallery')));
+app.use(express.static(path.join(__dirname, 'static')));
 // app.use(express.static(path.join(__dirname, 'node_modules/photoswipe/website')));
 
 
-app.use('/', require('./routes/index'));
-app.use('/albums', require('./routes/albums'));
-app.use('/admin', require('./routes/admin'));
+app.use('/', require('./routes/albums'));
 
 
 // catch 404 and forward to error handler
