@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.jpeg.JpegDirectory;
 
 import io.jirsis.drzewo.directory.repository.FileSystemHelper;
 import lombok.Setter;
@@ -45,6 +47,7 @@ public class ImageHelper {
 		File path = fileSystemHelper.jailedPath(relativePath);
 		return Arrays.asList(path.listFiles(new ImageFilter()));
 	}
+	
 
 	public ByteArrayOutputStream createThumbnail(String imagePath) {
 		Orientation orientation = getOrientation(imagePath);
@@ -57,8 +60,7 @@ public class ImageHelper {
 		try {
 			Thumbnails
 				.of(imagePath)
-				.size(thumbnailWidth, thumbnailHeight)
-//				.rotate(calculateAngle(orientation))
+				.forceSize(thumbnailWidth, thumbnailHeight)
 				.outputFormat("jpg")
 				.toOutputStream(stream);
 			stream.close();
@@ -66,6 +68,32 @@ public class ImageHelper {
 			logErrorStackTrace(e);
 		}
 		return stream;
+	}
+	
+	public Optional<ExifIFD0Directory> getExifInformation(String imagePath) {
+		Optional<ExifIFD0Directory> exif;
+		try {
+			Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));
+			ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+			exif = Optional.ofNullable(directory);
+		} catch (ImageProcessingException | IOException e) {
+			exif = Optional.empty();
+		}
+
+		return exif;
+	}
+	
+	public Optional<JpegDirectory> getJpegInformation(String imagePath) {
+		Optional<JpegDirectory> exif;
+		try {
+			Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));
+			JpegDirectory directory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
+			exif = Optional.ofNullable(directory);
+		} catch (ImageProcessingException | IOException e) {
+			exif = Optional.empty();
+		}
+
+		return exif;
 	}
 
 	private double calculateAngle(Orientation orientation) {
