@@ -11,3 +11,4 @@ Es una aplicación para mostra distintos álbumes de fotos cargados previamente.
 - [ ] definir pantalla para gestionar el CRUD de álbumes
 - [ ] internacionalización de textos
 - [ ] hacer jail para la carpeta de fotos y no navegar fuera de ahí
+- [ ] i18n http://markocen.github.io/blog/i18n-for-node-application.html
