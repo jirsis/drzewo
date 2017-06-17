@@ -5,7 +5,7 @@ io:
       thumbnail:
         width: 75
         height: 75
-      pageSize: 15
+      pageSize: 5
 spring:
   data:
     mongodb:

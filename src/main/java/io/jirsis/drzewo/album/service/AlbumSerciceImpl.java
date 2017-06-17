@@ -1,13 +1,17 @@
 package io.jirsis.drzewo.album.service;
 
 import java.io.File;
-import java.util.Optional;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import io.jirsis.drzewo.album.controller.AlbumDetailResponse;
 import io.jirsis.drzewo.album.controller.AlbumResponse;
 import io.jirsis.drzewo.album.controller.AllAlbumResponse;
 import io.jirsis.drzewo.album.controller.NewAlbumResponse;
@@ -16,6 +20,7 @@ import io.jirsis.drzewo.album.repository.AlbumRepository;
 import io.jirsis.drzewo.directory.repository.FileSystemEntity;
 import io.jirsis.drzewo.directory.repository.FileSystemHelper;
 import io.jirsis.drzewo.directory.repository.FileSystemRepository;
+import io.jirsis.drzewo.helper.PaginationHelper;
 import io.jirsis.drzewo.mapper.CustomMapper;
 import io.jirsis.drzewo.thumbnail.repository.ThumbnailEntity;
 import io.jirsis.drzewo.thumbnail.repository.ThumbnailRepository;
@@ -26,27 +31,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 public class AlbumSerciceImpl implements AlbumService {
-	
-	
-
 	private AlbumRepository albumRepository;
-
 	private ThumbnailRepository thumbnailRepository;
-
 	private FileSystemRepository fileSystemRepository;
 
 	private CustomMapper<AlbumEntity, NewAlbumResponse> mapperEntityToNewAlbumResponse;
-	private CustomMapper<AlbumEntity, AlbumResponse> mapperEntityToAlbumResponse;
 
 	private FileSystemHelper fileSystemHelper;
 	private ImageHelper imageHelper;
 	private PaginationHelper paginationHelper;
 
-	@Override
-	public Optional<AlbumResponse> getAlbumDetail(String albumName) {
-		Optional<AlbumEntity> album = Optional.ofNullable(albumRepository.findOne(albumName));
-		return mapperEntityToAlbumResponse.from(album);
-	}
+	private Converter<ThumbnailEntity, AlbumDetailResponse> thumbnailEntityToAlbumDetailResponseConverter;
 
 	@Override
 	public NewAlbumResponse createNewAlbum(String albumName, String relativePath) {
@@ -109,9 +104,29 @@ public class AlbumSerciceImpl implements AlbumService {
 	}
 
 	@Override
-	public Optional<AllAlbumResponse> getAllAlbums(int page) {
-		Page<AlbumEntity> albumsEntity = albumRepository.findAll(paginationHelper.getPage(page));
-		return null;
+	public AllAlbumResponse getAllAlbums(int page) {
+		Page<AlbumEntity> albumsEntity = albumRepository.findAll(paginationHelper.getPageable(page));
+		
+		AllAlbumResponse allAlbum = new AllAlbumResponse();
+		allAlbum.setPagination(paginationHelper.getPaginationResponse(albumsEntity));
+		
+		Map<String, List<AlbumDetailResponse>> mapa = 
+			albumsEntity
+			.map(a -> a.getName())
+			.map(a -> thumbnailRepository.findByAlbum(a))
+			.getContent()
+			.stream()
+			.flatMap(t -> t.stream())
+			.map(t -> thumbnailEntityToAlbumDetailResponseConverter.convert(t))
+			.collect(Collectors.groupingBy(AlbumDetailResponse::getAlbumName, Collectors.toList()));
+		List<AlbumResponse> albumResponse = mapa.keySet().stream().map(k -> {
+			AlbumResponse response = new AlbumResponse();
+			response.setName(k);
+			response.setDetail(mapa.get(k));
+			return response;
+		}).collect(Collectors.toList());
+		allAlbum.setAlbums(albumResponse);
+		return allAlbum;
 	}
 
 }

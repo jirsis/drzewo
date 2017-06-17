@@ -1,4 +1,4 @@
-package io.jirsis.drzewo.album.controller;
+package io.jirsis.drzewo.helper;
 
 import lombok.Data;
 
@@ -7,7 +7,5 @@ public class PaginationResponse {
 	
 	private int currentPage;
 	private int totalPages;
-	private int itemsPerPage;
-	private int totalItems;
 
 }

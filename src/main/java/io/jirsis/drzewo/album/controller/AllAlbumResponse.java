@@ -3,6 +3,7 @@ package io.jirsis.drzewo.album.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jirsis.drzewo.helper.PaginationResponse;
 import lombok.Data;
 
 @Data
@@ -19,5 +20,5 @@ public class AllAlbumResponse {
 	public boolean add(AlbumResponse album){
 		return albums.add(album);
 	}
-
+	
 }
