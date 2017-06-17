@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ThumbnailResponse {
 	
-	private String originalPhoto;
+	private OriginalPhotoResponse originalPhoto;
 	private byte [] rawData;
 
 }

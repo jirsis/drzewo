@@ -3,9 +3,6 @@ package io.jirsis.drzewo.album.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +19,7 @@ import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
 
 import io.jirsis.drzewo.directory.repository.FileSystemHelper;
+import javaxt.io.Image;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -45,6 +43,7 @@ public class ImageHelper {
 		File path = fileSystemHelper.jailedPath(relativePath);
 		return Arrays.asList(path.listFiles(new ImageFilter()));
 	}
+	
 
 	public ByteArrayOutputStream createThumbnail(String imagePath) {
 		Orientation orientation = getOrientation(imagePath);
@@ -57,8 +56,7 @@ public class ImageHelper {
 		try {
 			Thumbnails
 				.of(imagePath)
-				.size(thumbnailWidth, thumbnailHeight)
-//				.rotate(calculateAngle(orientation))
+				.forceSize(thumbnailWidth, thumbnailHeight)
 				.outputFormat("jpg")
 				.toOutputStream(stream);
 			stream.close();
@@ -67,19 +65,28 @@ public class ImageHelper {
 		}
 		return stream;
 	}
-
-	private double calculateAngle(Orientation orientation) {
-		double angle = 0;
-		switch(orientation){
+	
+	public PhotoDetails getPhotoInfo(String imagePath){
+		PhotoDetails details = new PhotoDetails();
+		Image image = new Image(imagePath);
+		details.setWidth(image.getWidth());
+		details.setHeight(image.getHeight());
+		details.setOrientation((Integer)(image.getExifTags().get(ExifDirectoryBase.TAG_ORIENTATION)));
+		fixOrientation(details);
+		return details;
+		
+	}
+	
+	private void fixOrientation(PhotoDetails details) {
+		switch(Orientation.typeOf(details.getOrientation())){
 		case LEFT_BOTTOM:
-			angle=90;
+			int heigth=details.getHeight();
+			details.setHeight(details.getWidth());
+			details.setWidth(heigth);
 			break;
-		case TOP_LEFT:
 		default:
-			angle=0;
 			break;
 		}
-		return angle;
 	}
 
 	private Orientation getOrientation(String imagePath) {
@@ -102,15 +109,9 @@ public class ImageHelper {
 		}
 	}
 
-	public byte[] getImage(String path, String image) {
-		Path pathFilesystem = Paths.get(path, image);
-		byte [] rawImage;
-		try {
-			rawImage = Files.readAllBytes(pathFilesystem);
-		} catch (IOException e) {
-			rawImage = null;
-		}
-
-		return rawImage;
+	public byte[] getImage(String path, String imageName, int orientation) {
+		Image image = new Image(path+File.separator+imageName);
+		if(Orientation.LEFT_BOTTOM.equals(Orientation.typeOf(orientation))) {image.rotateCounterClockwise();} 
+		return image.getByteArray();
 	}
 }

@@ -23,22 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AlbumSerciceImpl implements AlbumService{
-	
+public class AlbumSerciceImpl implements AlbumService {
+
 	private AlbumRepository albumRepository;
-	
+
 	private ThumbnailRepository thumbnailRepository;
-	
+
 	private FileSystemRepository fileSystemRepository;
-	
+
 	private CustomMapper<AlbumEntity, NewAlbumResponse> mapperEntityToNewAlbumResponse;
 	private CustomMapper<AlbumEntity, AlbumResponse> mapperEntityToAlbumResponse;
-	
+
 	private FileSystemHelper helper;
-	
+
 	private ImageHelper imageHelper;
-	
-	
+
 	@Override
 	public Optional<AlbumResponse> getAlbumDetail(String albumName) {
 		Optional<AlbumEntity> album = Optional.ofNullable(albumRepository.findOne(albumName));
@@ -46,28 +45,34 @@ public class AlbumSerciceImpl implements AlbumService{
 	}
 
 	@Override
-	public NewAlbumResponse createNewAlbum(String albumName, String relativePath){
+	public NewAlbumResponse createNewAlbum(String albumName, String relativePath) {
 		AlbumEntity entity = saveNewAlbum(albumName, relativePath);
 		CompletableFuture.runAsync(() -> {
 			generateThumbnails(albumName, relativePath);
 		});
 		return mapperEntityToNewAlbumResponse.from(entity);
 	}
-	
+
 	private void generateThumbnails(String albumName, String relativePath) {
 		ThumbnailEntity thumbnail;
-		
-		for(File image : imageHelper.listAllImagesInDir(relativePath)){
-			Example<ThumbnailEntity> example = exampleThumbnail(albumName, image);
-			if(thumbnailRepository.findOne(example)==null){
+
+		for (File image : imageHelper.listAllImagesInDir(relativePath)) {
+			if (thumbnailRepository.findOne(exampleThumbnail(albumName, image)) == null) {
 				log.info("Thumbnail of {} in album '{}'", image.getName(), albumName);
 				thumbnail = new ThumbnailEntity();
 				thumbnail.setRawData(imageHelper.createThumbnail(image.getAbsolutePath()).toByteArray());
 				thumbnail.setAlbum(albumName);
 				thumbnail.setImage(image.getName());
+				fillInformation(imageHelper.getPhotoInfo(image.getAbsolutePath()), thumbnail);
 				thumbnailRepository.save(thumbnail);
 			}
 		}
+	}
+
+	private void fillInformation(PhotoDetails photoInfo, ThumbnailEntity thumbnail) {
+		thumbnail.setExifOrientation(photoInfo.getOrientation());
+		thumbnail.setWidth(photoInfo.getWidth());
+		thumbnail.setHeight(photoInfo.getHeight());
 	}
 
 	private Example<ThumbnailEntity> exampleThumbnail(String albumName, File image) {
@@ -90,14 +95,13 @@ public class AlbumSerciceImpl implements AlbumService{
 
 	@Override
 	public byte[] sendOneImage(String albumName, String image) {
-		 ThumbnailEntity imageInAlbum = thumbnailRepository.findByAlbumAndImage(albumName, image);
-		 
-		 byte [] rawImage = null;
-		 if(imageInAlbum!=null){
-			 AlbumEntity album = albumRepository.findOne(albumName);
-			 rawImage = imageHelper.getImage(album.getPath(), image);
-		 }
-		 return rawImage;
+		ThumbnailEntity imageInAlbum = thumbnailRepository.findByAlbumAndImage(albumName, image);
+		byte[] rawImage = null;
+		if (imageInAlbum != null) {
+			AlbumEntity album = albumRepository.findOne(albumName);
+			rawImage = imageHelper.getImage(album.getPath(), image, imageInAlbum.getExifOrientation());
+		}
+		return rawImage;
 	}
 
 }

@@ -29,7 +29,6 @@ public class AlbumController {
 		}else{
 			return ResponseEntity.notFound().build();
 		}
-		
 	}
 
 	@RequestMapping(path = AlbumLinks.ALBUM_NAME_IMAGE, method = GET)

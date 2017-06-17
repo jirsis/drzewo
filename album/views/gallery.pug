@@ -1,0 +1,46 @@
+doctype html
+html(lang='es')
+  head
+    //if IE
+      meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(charset='utf-8')
+    title photoswipe Gallery
+    meta(name='description')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='https://fonts.googleapis.com/css?family=Open+Sans', rel='stylesheet')
+    link(rel='stylesheet', href='photoswipe/photoswipe.css')
+    link(rel='stylesheet', href='photoswipe/drzewo.css')
+    link(rel='stylesheet', href='photoswipe/default-skin/default-skin.css')
+    script(src='photoswipe/photoswipe.js')
+    script(src='photoswipe/photoswipe-ui-default.js')
+  body
+
+  h1 Galería familiar
+    .pswp(tabindex='-1', role='dialog', aria-hidden='true')
+      .pswp__bg
+      .pswp__scroll-wrap
+        .pswp__container
+          .pswp__item
+          .pswp__item
+          .pswp__item
+        .pswp__ui.pswp__ui--hidden
+          .pswp__top-bar
+            .pswp__counter
+            button.pswp__button.pswp__button--close(title='Cerrar (Esc)')
+            button.pswp__button.pswp__button--share(title='Compartir')
+            button.pswp__button.pswp__button--fs(title='Cambiar pantalla completa')
+            button.pswp__button.pswp__button--zoom(title='Zoom in/out')
+            .pswp__preloader
+              .pswp__preloader__icn
+                .pswp__preloader__cut
+                  .pswp__preloader__donut
+          .pswp__share-modal.pswp__share-modal--hidden.pswp__single-tap
+            .pswp__share-tooltip
+          button.pswp__button.pswp__button--arrow--left(title='Anterior (flecha izq)')
+          button.pswp__button.pswp__button--arrow--right(title='Siguiente (flecha der)')
+          .pswp__caption
+            .pswp__caption__center
+  block gallery
+
+  block jscripts
+    script(src='photoswipe/drzewo.js')
