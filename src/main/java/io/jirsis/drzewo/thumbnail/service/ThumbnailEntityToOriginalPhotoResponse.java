@@ -14,7 +14,6 @@ public class ThumbnailEntityToOriginalPhotoResponse extends CustomMapper<Thumbna
 		OriginalPhotoResponse response = new OriginalPhotoResponse();
 		response.setHeight(source.getHeight());
 		response.setWidth(source.getWidth());
-		response.setRotateDegrees(source.getExifOrientation());
 		response.setHref(String.format("%s/%s/%s", AlbumLinks.DEFAULT, source.getAlbum(), source.getImage()));
 		return response;
 	}

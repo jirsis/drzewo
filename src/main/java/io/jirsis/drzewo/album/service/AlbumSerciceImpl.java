@@ -7,11 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import com.drew.metadata.MetadataException;
-import com.drew.metadata.exif.ExifDirectoryBase;
-import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.jpeg.JpegDirectory;
-
 import io.jirsis.drzewo.album.controller.AlbumResponse;
 import io.jirsis.drzewo.album.controller.NewAlbumResponse;
 import io.jirsis.drzewo.album.repository.AlbumEntity;
@@ -68,31 +63,16 @@ public class AlbumSerciceImpl implements AlbumService {
 				thumbnail.setRawData(imageHelper.createThumbnail(image.getAbsolutePath()).toByteArray());
 				thumbnail.setAlbum(albumName);
 				thumbnail.setImage(image.getName());
-				fillExifInformation(image.getAbsolutePath(), thumbnail);
-				fillJpegInformation(image.getAbsolutePath(), thumbnail);
+				fillInformation(imageHelper.getPhotoInfo(image.getAbsolutePath()), thumbnail);
 				thumbnailRepository.save(thumbnail);
 			}
 		}
 	}
 
-	private void fillJpegInformation(String absolutePath, ThumbnailEntity thumbnail) {
-		JpegDirectory jpegInformation = imageHelper.getJpegInformation(absolutePath).get();
-		try {
-			thumbnail.setWidth(jpegInformation.getDouble(JpegDirectory.TAG_IMAGE_WIDTH));
-			thumbnail.setHeight(jpegInformation.getDouble(JpegDirectory.TAG_IMAGE_HEIGHT));
-		} catch (MetadataException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private void fillExifInformation(String absolutePath, ThumbnailEntity thumbnail) {
-		ExifIFD0Directory exifInformation = imageHelper.getExifInformation(absolutePath).get();
-		try {
-			thumbnail.setExifOrientation(exifInformation.getInt(ExifDirectoryBase.TAG_ORIENTATION));
-		} catch (MetadataException e) {
-			e.printStackTrace();
-		}
+	private void fillInformation(PhotoDetails photoInfo, ThumbnailEntity thumbnail) {
+		thumbnail.setExifOrientation(photoInfo.getOrientation());
+		thumbnail.setWidth(photoInfo.getWidth());
+		thumbnail.setHeight(photoInfo.getHeight());
 	}
 
 	private Example<ThumbnailEntity> exampleThumbnail(String albumName, File image) {
@@ -116,11 +96,10 @@ public class AlbumSerciceImpl implements AlbumService {
 	@Override
 	public byte[] sendOneImage(String albumName, String image) {
 		ThumbnailEntity imageInAlbum = thumbnailRepository.findByAlbumAndImage(albumName, image);
-
 		byte[] rawImage = null;
 		if (imageInAlbum != null) {
 			AlbumEntity album = albumRepository.findOne(albumName);
-			rawImage = imageHelper.getImage(album.getPath(), image);
+			rawImage = imageHelper.getImage(album.getPath(), image, imageInAlbum.getExifOrientation());
 		}
 		return rawImage;
 	}

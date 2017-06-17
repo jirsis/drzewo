@@ -17,7 +17,7 @@ public class ThumbnailEntity {
 	private byte[] rawData;
 	
 	private Integer exifOrientation;
-	private Double height;
-	private Double width;
+	private Integer height;
+	private Integer width;
 
 }

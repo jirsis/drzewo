@@ -3,12 +3,8 @@ package io.jirsis.drzewo.album.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +17,9 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.jpeg.JpegDirectory;
 
 import io.jirsis.drzewo.directory.repository.FileSystemHelper;
+import javaxt.io.Image;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -70,44 +66,27 @@ public class ImageHelper {
 		return stream;
 	}
 	
-	public Optional<ExifIFD0Directory> getExifInformation(String imagePath) {
-		Optional<ExifIFD0Directory> exif;
-		try {
-			Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));
-			ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-			exif = Optional.ofNullable(directory);
-		} catch (ImageProcessingException | IOException e) {
-			exif = Optional.empty();
-		}
-
-		return exif;
+	public PhotoDetails getPhotoInfo(String imagePath){
+		PhotoDetails details = new PhotoDetails();
+		Image image = new Image(imagePath);
+		details.setWidth(image.getWidth());
+		details.setHeight(image.getHeight());
+		details.setOrientation((Integer)(image.getExifTags().get(ExifDirectoryBase.TAG_ORIENTATION)));
+		fixOrientation(details);
+		return details;
+		
 	}
 	
-	public Optional<JpegDirectory> getJpegInformation(String imagePath) {
-		Optional<JpegDirectory> exif;
-		try {
-			Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));
-			JpegDirectory directory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
-			exif = Optional.ofNullable(directory);
-		} catch (ImageProcessingException | IOException e) {
-			exif = Optional.empty();
-		}
-
-		return exif;
-	}
-
-	private double calculateAngle(Orientation orientation) {
-		double angle = 0;
-		switch(orientation){
+	private void fixOrientation(PhotoDetails details) {
+		switch(Orientation.typeOf(details.getOrientation())){
 		case LEFT_BOTTOM:
-			angle=90;
+			int heigth=details.getHeight();
+			details.setHeight(details.getWidth());
+			details.setWidth(heigth);
 			break;
-		case TOP_LEFT:
 		default:
-			angle=0;
 			break;
 		}
-		return angle;
 	}
 
 	private Orientation getOrientation(String imagePath) {
@@ -130,15 +109,9 @@ public class ImageHelper {
 		}
 	}
 
-	public byte[] getImage(String path, String image) {
-		Path pathFilesystem = Paths.get(path, image);
-		byte [] rawImage;
-		try {
-			rawImage = Files.readAllBytes(pathFilesystem);
-		} catch (IOException e) {
-			rawImage = null;
-		}
-
-		return rawImage;
+	public byte[] getImage(String path, String imageName, int orientation) {
+		Image image = new Image(path+File.separator+imageName);
+		if(Orientation.LEFT_BOTTOM.equals(Orientation.typeOf(orientation))) {image.rotateCounterClockwise();} 
+		return image.getByteArray();
 	}
 }
