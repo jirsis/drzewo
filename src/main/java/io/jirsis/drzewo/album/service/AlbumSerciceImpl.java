@@ -5,9 +5,11 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import io.jirsis.drzewo.album.controller.AlbumResponse;
+import io.jirsis.drzewo.album.controller.AllAlbumResponse;
 import io.jirsis.drzewo.album.controller.NewAlbumResponse;
 import io.jirsis.drzewo.album.repository.AlbumEntity;
 import io.jirsis.drzewo.album.repository.AlbumRepository;
@@ -24,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 public class AlbumSerciceImpl implements AlbumService {
+	
+	
 
 	private AlbumRepository albumRepository;
 
@@ -34,9 +38,9 @@ public class AlbumSerciceImpl implements AlbumService {
 	private CustomMapper<AlbumEntity, NewAlbumResponse> mapperEntityToNewAlbumResponse;
 	private CustomMapper<AlbumEntity, AlbumResponse> mapperEntityToAlbumResponse;
 
-	private FileSystemHelper helper;
-
+	private FileSystemHelper fileSystemHelper;
 	private ImageHelper imageHelper;
+	private PaginationHelper paginationHelper;
 
 	@Override
 	public Optional<AlbumResponse> getAlbumDetail(String albumName) {
@@ -85,7 +89,7 @@ public class AlbumSerciceImpl implements AlbumService {
 	private AlbumEntity saveNewAlbum(String albumName, String relativePath) {
 		AlbumEntity entity = new AlbumEntity();
 		entity.setName(albumName);
-		File path = helper.jailedPath(relativePath);
+		File path = fileSystemHelper.jailedPath(relativePath);
 		FileSystemEntity fileSystem = fileSystemRepository.listDirectory(relativePath);
 		entity.setPath(path.getAbsolutePath());
 		entity.setTotalPhotos(fileSystem.getImages());
@@ -102,6 +106,12 @@ public class AlbumSerciceImpl implements AlbumService {
 			rawImage = imageHelper.getImage(album.getPath(), image, imageInAlbum.getExifOrientation());
 		}
 		return rawImage;
+	}
+
+	@Override
+	public Optional<AllAlbumResponse> getAllAlbums(int page) {
+		Page<AlbumEntity> albumsEntity = albumRepository.findAll(paginationHelper.getPage(page));
+		return null;
 	}
 
 }

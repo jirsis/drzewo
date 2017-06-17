@@ -6,6 +6,7 @@ import io.jirsis.drzewo.album.controller.AlbumResponse;
 import io.jirsis.drzewo.album.repository.AlbumEntity;
 import io.jirsis.drzewo.mapper.CustomMapper;
 import io.jirsis.drzewo.mapper.Mapper;
+import io.jirsis.drzewo.thumbnail.controller.ThumbnailLinks;
 
 @Mapper
 public class AlbumEntityToAlbumResponseMapper extends CustomMapper<AlbumEntity, AlbumResponse>{
@@ -15,6 +16,7 @@ public class AlbumEntityToAlbumResponseMapper extends CustomMapper<AlbumEntity, 
 		AlbumResponse response = new AlbumResponse();
 		response.setAlbum(source.getName());
 		response.setTotalImages(source.getTotalPhotos());
+		response.setHref(ThumbnailLinks.ALL_THUMBNAILS_BY_ALBUM.replace("{album}", source.getName()));
 		return response;
 	}
 	

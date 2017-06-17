@@ -3,6 +3,7 @@ package io.jirsis.drzewo.album.service;
 import java.util.Optional;
 
 import io.jirsis.drzewo.album.controller.AlbumResponse;
+import io.jirsis.drzewo.album.controller.AllAlbumResponse;
 import io.jirsis.drzewo.album.controller.NewAlbumResponse;
 
 public interface AlbumService {
@@ -12,5 +13,7 @@ public interface AlbumService {
 	Optional<AlbumResponse> getAlbumDetail(String albumName);
 
 	byte[] sendOneImage(String album, String image);
+	
+	Optional<AllAlbumResponse> getAllAlbums(int page);
 
 }
