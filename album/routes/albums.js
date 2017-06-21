@@ -8,10 +8,11 @@ var HttpStatus = require('http-status-codes');
 var config=require('../config');
 
 router.get('', function(request, response){
+
     var options = {
         host: config.api.host,
         port: config.api.port,
-        path: '/thumbnails/exif2',
+        path: '/albums',
         method: 'GET'
     };
     http.request(options, function(res) {
@@ -24,9 +25,12 @@ router.get('', function(request, response){
             var json = JSON.parse(data);
             json.photoServer=
                 config.api.protocol+'://'+config.api.host+':'+config.api.port;
+            debug(json);
             response.render('albums', json);
         });
     }).end();
+
+
 });
 
 module.exports = router;

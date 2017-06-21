@@ -2,7 +2,6 @@ package io.jirsis.drzewo.thumbnail.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +19,6 @@ public class ThumbnailController {
 	@RequestMapping(path = ThumbnailLinks.ALL_THUMBNAILS_BY_ALBUM, method = GET)
 	public ResponseEntity<ThumbnailResumeResponse> getThumbnail(@PathVariable String album) {
 		ThumbnailResumeResponse response = service.getResumeThumbnails(album);
-		if(response.getTotalImages() == 0){
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		}else if(response.getThumbnails().size() == response.getTotalImages()){
-			return ResponseEntity.ok(response); 
-		}else{
-			return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(response);
-		}
+		return ResponseEntity.ok(response); 
 	}
 }

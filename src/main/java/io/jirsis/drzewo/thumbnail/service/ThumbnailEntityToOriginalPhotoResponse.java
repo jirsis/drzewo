@@ -17,5 +17,4 @@ public class ThumbnailEntityToOriginalPhotoResponse extends CustomMapper<Thumbna
 		response.setHref(String.format("%s/%s/%s", AlbumLinks.DEFAULT, source.getAlbum(), source.getImage()));
 		return response;
 	}
-
 }

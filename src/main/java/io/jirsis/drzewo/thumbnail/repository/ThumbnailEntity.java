@@ -19,5 +19,5 @@ public class ThumbnailEntity {
 	private Integer exifOrientation;
 	private Integer height;
 	private Integer width;
-
+	
 }

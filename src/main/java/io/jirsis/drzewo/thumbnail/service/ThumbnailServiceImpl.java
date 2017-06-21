@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import io.jirsis.drzewo.album.repository.AlbumEntity;
-import io.jirsis.drzewo.album.repository.AlbumRepository;
 import io.jirsis.drzewo.mapper.CustomMapper;
 import io.jirsis.drzewo.thumbnail.controller.ThumbnailResponse;
 import io.jirsis.drzewo.thumbnail.controller.ThumbnailResumeResponse;
@@ -22,8 +20,6 @@ import lombok.AllArgsConstructor;
 public class ThumbnailServiceImpl implements ThumbnailService{
 	
 	private ThumbnailRepository thumbnailRepository;
-	private AlbumRepository albumRepository;
-	
 	private CustomMapper<ThumbnailEntity, ThumbnailResponse> mapper;
 	
 	@Override
@@ -31,8 +27,6 @@ public class ThumbnailServiceImpl implements ThumbnailService{
 		ThumbnailResumeResponse response = null;
 		response = new ThumbnailResumeResponse();
 		Optional<List<ThumbnailEntity>> thumbnails = Optional.ofNullable(thumbnailRepository.findAll(example(albumName)));
-		Optional<AlbumEntity> album = Optional.ofNullable(albumRepository.findOne(albumName));
-		if(album.isPresent()) {response.setTotalImages(album.get().getTotalPhotos());}
 		response.setAlbumName(albumName);
 		response.setThumbnails(
 					thumbnails.orElse(new ArrayList<>())

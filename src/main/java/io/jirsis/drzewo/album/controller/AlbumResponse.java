@@ -1,12 +1,12 @@
 package io.jirsis.drzewo.album.controller;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
 public class AlbumResponse {
-	private String album;
+	private String name;
+	private List<AlbumDetailResponse> detail;
 	
-	private int totalImages;
-	
-
 }
