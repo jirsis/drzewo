@@ -37,10 +37,4 @@ router.get('', function(request, response){
 
 });
 
-router.get('/hola', function(req, res){
-    debug("hola: "+ req.i18n.getLocale());
-    var model = { locale: req.i18n.getLocale() };
-    res.render("hola", model);
-})
-
 module.exports = router;
