@@ -121,12 +121,12 @@ public class AlbumSerciceImpl implements AlbumService {
 			.flatMap(t -> t.stream())
 			.map(t -> thumbnailEntityToAlbumDetailResponseConverter.convert(t))
 			.collect(Collectors.groupingBy(AlbumDetailResponse::getAlbumName, Collectors.toList()));
-		List<AlbumResponse> albumResponse = mapa.keySet().stream().map(k -> {
+		List<AlbumResponse> albumResponse = albumsEntity.map(album -> {
 			AlbumResponse response = new AlbumResponse();
-			response.setName(k);
-			response.setDetail(mapa.get(k));
+			response.setName(album.getName());
+			response.setDetail(mapa.get(album.getName()));
 			return response;
-		}).collect(Collectors.toList());
+		}).getContent();
 		allAlbum.setAlbums(albumResponse);
 		return allAlbum;
 	}
