@@ -1,6 +1,7 @@
 package io.jirsis.drzewo.album.service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -88,6 +89,7 @@ public class AlbumSerciceImpl implements AlbumService {
 		FileSystemEntity fileSystem = fileSystemRepository.listDirectory(relativePath);
 		entity.setPath(path.getAbsolutePath());
 		entity.setTotalPhotos(fileSystem.getImages());
+		entity.setCreationDate(new Date());
 		entity = albumRepository.save(entity);
 		return entity;
 	}

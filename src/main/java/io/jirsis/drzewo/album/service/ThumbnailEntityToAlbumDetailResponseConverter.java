@@ -15,7 +15,7 @@ public class ThumbnailEntityToAlbumDetailResponseConverter implements Converter<
 	public AlbumDetailResponse convert(ThumbnailEntity source) {
 		AlbumDetailResponse response = new AlbumDetailResponse();
 		response.setAlbumName(source.getAlbum());
-		response.setRawData(source.getRawData());
+		response.setThumbnailRaw(source.getRawData());
 		response.setOriginalPhoto(convertOriginalPhotoResponse(source));
 		return response;
 	}
@@ -24,7 +24,7 @@ public class ThumbnailEntityToAlbumDetailResponseConverter implements Converter<
 		OriginalPhotoResponse response = new OriginalPhotoResponse();
 		response.setHeight(source.getHeight());
 		response.setWidth(source.getWidth());
-		response.setHref(AlbumLinks.ALBUM_NAME.replace("{name}", source.getAlbum()));
+		response.setHref(String.format("%s/%s", AlbumLinks.ALBUM_NAME.replace("{name}", source.getAlbum()), source.getImage()));
 		return response;
 	}
 
