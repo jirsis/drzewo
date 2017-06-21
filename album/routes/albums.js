@@ -26,33 +26,11 @@ router.get('', function(request, response){
             json.photoServer=
                 config.api.protocol+'://'+config.api.host+':'+config.api.port;
             debug(json);
-            getAlbums(request, response);
+            response.render('albums', json);
         });
     }).end();
 
 
 });
-
-var getAlbums = function(request, response){
-    var options = {
-        host: config.api.host,
-        port: config.api.port,
-        path: '/thumbnails/exif2',
-        method: 'GET'
-    };
-    http.request(options, function(res) {
-        res.setEncoding('utf8');
-        var data = '';
-        res.on('data', function (chunk) {
-            data += chunk;
-        });
-        res.on('end', () => {
-            var json = JSON.parse(data);
-            json.photoServer=
-                config.api.protocol+'://'+config.api.host+':'+config.api.port;
-            response.render('albums', json);
-        });
-    }).end();
-}
 
 module.exports = router;

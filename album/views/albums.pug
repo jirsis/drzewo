@@ -1,9 +1,10 @@
 extends gallery 
 
 block gallery
-    h2.my-gallery #{albumName}
-    .my-gallery
-      each photo in thumbnails 
-        figure
-          a(href=photoServer+photo.originalPhoto.href , data-size=photo.originalPhoto.width+'x'+photo.originalPhoto.height)
-            img(src='data:image/jpeg;base64,'+photo.rawData)
+    each album in albums
+        h2.my-gallery #{album.name}
+        .my-gallery
+            each photo in album.detail
+                figure
+                    a(href=photoServer+photo.originalPhoto.href, data-size=photo.originalPhoto.width+'x'+photo.originalPhoto.height)
+                        img(src='data:image/jpeg;base64,'+photo.thumbnailRaw)
