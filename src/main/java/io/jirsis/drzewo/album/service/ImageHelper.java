@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,7 +72,8 @@ public class ImageHelper {
 		Image image = new Image(imagePath);
 		details.setWidth(image.getWidth());
 		details.setHeight(image.getHeight());
-		details.setOrientation((Integer)(image.getExifTags().get(ExifDirectoryBase.TAG_ORIENTATION)));
+		Optional<Integer> orientation = Optional.ofNullable((Integer)(image.getExifTags().get(ExifDirectoryBase.TAG_ORIENTATION)));
+		details.setOrientation(orientation.orElse(Integer.valueOf(1)));
 		fixOrientation(details);
 		return details;
 		
