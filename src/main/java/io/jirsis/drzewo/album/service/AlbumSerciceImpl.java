@@ -48,7 +48,12 @@ public class AlbumSerciceImpl implements AlbumService {
 	public NewAlbumResponse createNewAlbum(String albumName, String relativePath) {
 		AlbumEntity entity = saveNewAlbum(albumName, relativePath);
 		CompletableFuture.runAsync(() -> {
-			generateThumbnails(albumName, relativePath);
+			try{
+				generateThumbnails(albumName, relativePath);
+			}catch(Exception e){
+				albumRepository.delete(entity);
+				thumbnailRepository.delete(thumbnailRepository.findByAlbum(entity.getName()));
+			}
 		});
 		return mapperEntityToNewAlbumResponse.from(entity);
 	}
