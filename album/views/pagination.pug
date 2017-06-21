@@ -1,0 +1,19 @@
+.pags
+    nav.pags
+      ul.pags.pagination
+        if pagination.currentPage <= 1
+            li.disabled
+                a Anterior
+        else
+            li
+                a(href='?page='+(pagination.currentPage-1)) Anterior
+
+        li.active
+            a #{pagination.currentPage} / #{pagination.totalPages}
+
+        if pagination.currentPage >= pagination.totalPages
+            li.disabled
+                a Siguiente
+        else
+            li
+                a(href='?page='+(pagination.currentPage+1)) Siguiente

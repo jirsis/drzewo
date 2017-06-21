@@ -8,11 +8,13 @@ var HttpStatus = require('http-status-codes');
 var config=require('../config');
 
 router.get('', function(request, response){
+    var page = request.query.page || 1;
+    if (page<=0) page = 1;
 
     var options = {
         host: config.api.host,
         port: config.api.port,
-        path: '/albums',
+        path: '/albums'+'?page='+page,
         method: 'GET'
     };
     http.request(options, function(res) {

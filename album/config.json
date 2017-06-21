@@ -1,7 +1,7 @@
 {
 	"api": {
         "protocol": "http",
-        "host": "localhost",
+        "host": "192.168.0.6",
 		"port": 8080
 	}
 }
