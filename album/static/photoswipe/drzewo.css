@@ -26,6 +26,19 @@ h1, h2.my-gallery  {
 }
 
 .my-gallery figure {
+  display: block;
   float: left;
   height: 80px;
+}
+
+.pags ul {
+  display: flex;
+  justify-content: center;
+}
+
+.pags {
+  overflow: hidden;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
