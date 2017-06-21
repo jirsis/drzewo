@@ -112,7 +112,7 @@ public class AlbumSerciceImpl implements AlbumService {
 
 	@Override
 	public AllAlbumResponse getAllAlbums(int page) {
-		Page<AlbumEntity> albumsEntity = albumRepository.findAll(paginationHelper.getPageable(page));
+		Page<AlbumEntity> albumsEntity = albumRepository.findAllByOrderByCreationDateDesc(paginationHelper.getPageable(page));
 		
 		AllAlbumResponse allAlbum = new AllAlbumResponse();
 		allAlbum.setPagination(paginationHelper.getPaginationResponse(albumsEntity));
@@ -126,6 +126,7 @@ public class AlbumSerciceImpl implements AlbumService {
 			.flatMap(t -> t.stream())
 			.map(t -> thumbnailEntityToAlbumDetailResponseConverter.convert(t))
 			.collect(Collectors.groupingBy(AlbumDetailResponse::getAlbumName, Collectors.toList()));
+		
 		List<AlbumResponse> albumResponse = albumsEntity.map(album -> {
 			AlbumResponse response = new AlbumResponse();
 			response.setName(album.getName());
