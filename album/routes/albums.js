@@ -8,6 +8,7 @@ var HttpStatus = require('http-status-codes');
 var config=require('../config');
 
 router.get('', function(request, response){
+
     var page = request.query.page || 1;
     if (page<=0) page = 1;
 
@@ -27,6 +28,7 @@ router.get('', function(request, response){
             var json = JSON.parse(data);
             json.photoServer=
                 config.api.protocol+'://'+config.api.host+':'+config.api.port;
+            json.locale=request.i18n.getLocale(); 
             debug(json);
             response.render('albums', json);
         });
@@ -34,5 +36,11 @@ router.get('', function(request, response){
 
 
 });
+
+router.get('/hola', function(req, res){
+    debug("hola: "+ req.i18n.getLocale());
+    var model = { locale: req.i18n.getLocale() };
+    res.render("hola", model);
+})
 
 module.exports = router;
