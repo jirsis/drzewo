@@ -1,5 +1,18 @@
 # drzewo
 
+Son dos aplicaciones independientes. Una para administración de álbumes y otra para visualizarlos. 
+
+## Administración
+
+Está en la carpeta admin. Es una aplicación node, por lo que para instalarla es necesario ejecutar:
+
+```
+cd admin
+npm install 
+npm start
+```
+
+
 Es una aplicación para mostra distintos álbumes de fotos cargados previamente.
 
 ## ToDo list
